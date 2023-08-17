@@ -1,29 +1,42 @@
 # TOKOPEDIA PLAY (BACKEND)
 
+This repo provides backend code for Tokopedia Play clone project in Generasi Gigih 3.0 created by Naufal Yassar.
 
 ## DATABASE SCHEMA
-The database will be created based on `DATABASE_URL` inside `.env` file. The default value is :
-```
-DATABASE_URL = mongodb://127.0.0.1:27017/midtermyassar
-```
-There will be 3 collections inside the database :
+There will be 4 collections inside the database :
 - `videos`
 - `products`
 - `comments`
+- `users`
 
 The details for each collections shown below
 ### Videos
 This collection used the schema for Video as below :
 ``` 
 {
-    videoID: {
+    title: {
         type: String,
-        required: true,
-        unique: true
+        required: true
+    },
+    uploader: {
+        type: String,
+        required: true
     },
     thumbnailUrl: {
         type: String,
         required: true
+    },
+    embedID: {
+        type: String,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true
+    },
+    deal: {
+        type: String,
+        default: 'None'
     }
 }
 ```
@@ -36,12 +49,11 @@ This collection used the schema for Product as below :
         type: String,
         required: true
     },
-    productID: {
-        type: String,
-        required: true,
-        unique: true
-    },
     productUrl: {
+        type: String,
+        required: true
+    },
+    thumbnailUrl: {
         type: String,
         required: true
     },
@@ -111,8 +123,12 @@ Returns all videos
         [
 	        {
 		        "_id": string,
-		        "videoID": string,
-		        "thumbnailUrl": string
+		        "title": string,
+                "uploader": string,
+		        "thumbnailUrl": string,
+                "embedID": string,
+                "category": string,
+                "deal": string
 	        }
         ]
     ```
@@ -136,8 +152,8 @@ Returns all products with specified parameter `videoID`
 	        {
 		        "_id": string,
 		        "videoID": string,
-		        "productID": string,
 		        "productUrl": string,
+                "thumbnailUrl": string,
 		        "title": string,
 		        "price": number
 	        }
@@ -170,6 +186,39 @@ Returns all comments with specified parameter `videoID`
         ]
     ```
 
+### __*GET /api/videos/group/:groupBy*__
+
+Returns grouped videos with specified parameter `groupBy`
+
+- URL Params:
+    - *Required*: `groupBy=[string]`
+- Data Params:
+    - None
+- Headers:
+    - Content-Type: application/json
+- Success Response:
+    - Code: 200
+    - Content:
+
+    ```
+        [
+            {
+                "_id": string,
+                "videos": [
+                    {
+                        "_id": string,
+                        "title": string,
+                        "uploader": string,
+                        "thumbnailUrl": string,
+                        "embedID": string,
+                        "category": string,
+                        "deal": string
+                    }
+                ]
+            }
+        ]
+    ```
+
 ### __*POST /api/videos*__
 
 Create a new Video and returns the new object
@@ -180,8 +229,12 @@ Create a new Video and returns the new object
 
     ```
         {
-            "videoID": string,
-	        "thumbnailUrl": string
+            "title": string,
+            "uploader": string,
+            "thumbnailUrl": string,
+            "embedID": string,
+            "category": string,
+            "deal": string
         }   
     ```
 - Headers:
@@ -192,25 +245,29 @@ Create a new Video and returns the new object
 
     ```
         {
-            "videoID": string,
-	        "thumbnailUrl": string
+            "title": string,
+            "uploader": string,
+            "thumbnailUrl": string,
+            "embedID": string,
+            "category": string,
+            "deal": string
         }  
     ```
 
-### __*POST /api/videos/:videoID/addProduct*__
+### __*POST /api/videos/:videoID/products*__
 
 Create a new Product for the specified parameter `videoID` and returns the new object
 
 - URL Params:
-    - None
+    - *Required*: `videoID=[string]`
 - Data Params:
 
     ```
         {
-            "productID": string,
-            "productUrl": string,
-	        "title": string,
-	        "price": number
+		    "productUrl": string,
+            "thumbnailUrl": string,
+		    "title": string,
+		    "price": number
         } 
     ```
 - Headers:
@@ -221,10 +278,11 @@ Create a new Product for the specified parameter `videoID` and returns the new o
 
     ```
         {
-            "productID": string,
+            "videoID": string,
             "productUrl": string,
-	        "title": string,
-	        "price": number
+            "thumbnailUrl": string,
+		    "title": string,
+		    "price": number
         } 
     ```
 
@@ -233,7 +291,7 @@ Create a new Product for the specified parameter `videoID` and returns the new o
 Create a new Comment for the specified parameter `videoID` and returns the new object
 
 - URL Params:
-    - None
+    - *Required*: `videoID=[string]`
 - Data Params:
 
     ```
@@ -250,37 +308,86 @@ Create a new Comment for the specified parameter `videoID` and returns the new o
 
     ```
         {
+            "videoID": string,
             "username": string,
             "comment": string
         }
     ```
 
+### __*POST /api/videos/register*__
 
+User login
 
+- URL Params:
+    - None
+- Data Params:
+
+    ```
+        {
+            "username": string,
+            "password": string
+        }
+    ```
+- Headers:
+    - Content-Type: application/json
+- Success Response:
+    - Code: 201
+
+### __*POST /api/videos/login*__
+
+User login
+
+- URL Params:
+    - None
+- Data Params:
+
+    ```
+        {
+            "username": string,
+            "password": string
+        }
+    ```
+- Headers:
+    - Content-Type: application/json
+- Success Response:
+    - Code: 200
+
+### __*DELETE /api/videos/:videoID*__
+
+Delete video
+
+- URL Params:
+    - *Required*: `videoID=[string]`
+- Data Params:
+    - None
+- Headers:
+    - Content-Type: application/json
+- Success Response:
+    - Code: 200
 
 ## HOW TO RUN
 
 1. Download the code or clone the repository
 
     ```bash
-    git clone https://github.com/YMaximum/tokopedia-play-backend.git
+    git clone https://github.com/YMaximum/tokopedia-play-backend2.git
     ```
 2. Install dependencies
 
     ```bash
     npm install
     ```
-3. Open the `.env` file to edit your database connection url and server port. Example for default:
+3. Create `.env` file to edit your database connection url and server port. Example:
 
     ```
-    DATABASE_URL = mongodb://127.0.0.1:27017/midtermyassar
-    PORT = 3000
+    MONGO_CONNECTION_STRING = YOUR_STRING_HERE
+    PORT = 3080
     ```
 
 4. Run the server
 
     ```bash
-    npm run start
+    npm run dev
     ```
 
 5. Server will run on
