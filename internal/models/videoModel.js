@@ -22,7 +22,8 @@ const videoSchema = new mongoose.Schema({
         required: true
     },
     deal: {
-        type: String
+        type: String,
+        default: 'None'
     }
 })
 
