@@ -3,7 +3,7 @@
 This repo provides backend code for Tokopedia Play clone project in Generasi Gigih 3.0 created by Naufal Yassar.
 
 ## DATABASE SCHEMA
-There will be 4 collections inside the database :
+MongoDB will be used for the database. There will be 4 collections inside the database :
 - `videos`
 - `products`
 - `comments`
